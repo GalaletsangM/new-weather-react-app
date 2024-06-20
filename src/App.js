@@ -1,11 +1,26 @@
-import React from 'react';
+import React from "react";
 
-import './App.css';
+import "./App.css";
 
 export default function App() {
   return (
     <div className="App">
-    Weather App  
+      <div className="container">
+        <h1>Weather App</h1>
+        <footer>
+          This project was coded by{" "}
+          <a href="https://www.linkedin.com/in/galaletsang-precious-mafoko-67a13919a/">
+            Galaletsang Mafoko
+          </a>{" "}
+          and is open source on{" "}
+          <a
+            href="https://github.com/GalaletsangM/new-weather-react-app"
+            target="_blank"
+          >
+            Github
+          </a>
+        </footer>
+      </div>
     </div>
   );
 }
