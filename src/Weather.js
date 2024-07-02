@@ -1,60 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Weather.css";
 import axios from "axios";
 
-export default function Weather() {
-  function handleResponse(response){
-    console.log(response.data)
+export default function Weather(props) {
+  const [ready, setReady] = useState(false);
+  const [temperature, setTemperature] = useState(null);
+  const [humidity, setHumidity] = useState(null);
+  const [wind, setWind] = useState(null);
+  const [condition, setCondition] = useState(null);
+  const [date, setDate] = useState(null);
+  const [icon, setIcon] = useState(null);
+  function handleResponse(response) {
+    console.log(response.data);
+    setTemperature(response.data.main.temp);
+    setHumidity(response.data.main.humidity);
+    setWind(response.data.wind.speed);
+    setCondition(response.data.weather[0].description);
+    setReady(true);
+    setDate("Wednesday 07:00");
+    setIcon("https://ssl.gstatic.com/onebox/weather/64/partly_cloudy.png");
   }
 
-  const apiKey = "842b36d55cb28eba74a018029d56b04c";
-  let city = "Ashburn";
-  let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&unit=metric`;
-  axios.get(apiUrl).then(handleResponse);
-
-  return (
-    <div className="Weather">
-      <form>
-        <div className="row">
-          <div className="col-9">
-            <input
-              type="search"
-              placeholder="Enter a city.."
-              className="form-control"
-              autoFocus="on"
-            ></input>
+  if (ready) {
+    return (
+      <div className="Weather">
+        <form>
+          <div className="row">
+            <div className="col-9">
+              <input
+                type="search"
+                placeholder="Enter a city.."
+                className="form-control"
+                autoFocus="on"
+              ></input>
+            </div>
+            <div className="col-3">
+              <input
+                type="submit"
+                className="btn btn-primary w-100"
+                value="Search"
+              ></input>
+            </div>
           </div>
-          <div className="col-3">
-            <input
-              type="submit"
-              className="btn btn-primary w-100"
-              value="Search"
-            ></input>
+        </form>
+        <h1>{props.defaultcity}</h1>
+        <ul>
+          <li>{date}</li>
+          <li className="text-capitalize">{condition}</li>
+        </ul>
+        <div className="row mt-3">
+          <div className="col-6">
+            <img src={icon} alt={condition}></img>
+            <span className="temperature">{Math.round(temperature)}</span>
+            <span className="unit">°C</span>
           </div>
-        </div>
-      </form>
-      <h1>Ashburn, Va</h1>
-      <ul>
-        <li>Wednesday 07:00</li>
-        <li>Mostly Cloudy</li>
-      </ul>
-      <div className="row mt-3">
-        <div className="col-6">
-          <img
-            src="https://ssl.gstatic.com/onebox/weather/64/partly_cloudy.png"
-            alt="mostly cloudy"
-          ></img>
-          <span className="temperature">29</span>
-          <span className="unit">°C</span>
-        </div>
-        <div className="col-6">
-          <ul>
-            <li>Precipitation: 15%</li>
-            <li>Humidity: 72%</li>
-            <li>Wind: 13km/h</li>
-          </ul>
+          <div className="col-6">
+            <ul>
+              <li>Humidity: {Math.round(humidity)} %</li>
+              <li>Wind: {Math.round(wind)} km/h</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    const apiKey = "f3009e4852fa0a079dab291dabf020c4";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${props.defaultcity}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(handleResponse);
+    return "Loading...";
+  }
 }
